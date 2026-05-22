@@ -1,18 +1,16 @@
 import Link from "next/link";
-import Image from "next/image";
 import type { Category } from "@/types";
 
-const DEFAULT_ICONS: Record<string, string> = {
-  "soins-visage": "🧴",
-  "corps-bien-etre": "💆",
-  "cheveux": "💇",
-  "bebe-maman": "🍼",
-  "complements-alimentaires": "💊",
-  "solaire": "☀️",
-  "maquillage": "💄",
-  "hygiene": "🪥",
-  "homme": "🧔",
-  "dietetique": "🥗",
+const CATEGORY_STYLES: Record<string, { bg: string; text: string; emoji: string }> = {
+  "visage":                   { bg: "bg-pink-50",   text: "text-pink-700",   emoji: "✨" },
+  "corps":                    { bg: "bg-blue-50",   text: "text-blue-700",   emoji: "🧴" },
+  "cheveux":                  { bg: "bg-amber-50",  text: "text-amber-700",  emoji: "💇" },
+  "hygiene":                  { bg: "bg-cyan-50",   text: "text-cyan-700",   emoji: "🪥" },
+  "sante":                    { bg: "bg-red-50",    text: "text-red-700",    emoji: "❤️" },
+  "complements-alimentaires": { bg: "bg-violet-50", text: "text-violet-700", emoji: "💊" },
+  "bebe":                     { bg: "bg-yellow-50", text: "text-yellow-700", emoji: "🍼" },
+  "bio":                      { bg: "bg-green-50",  text: "text-green-700",  emoji: "🌿" },
+  "solaires":                 { bg: "bg-orange-50", text: "text-orange-700", emoji: "☀️" },
 };
 
 interface CategoriesProps {
@@ -21,49 +19,46 @@ interface CategoriesProps {
 
 export default function Categories({ categories }: CategoriesProps) {
   return (
-    <section className="py-16 bg-white">
+    <section className="py-8 bg-white border-b border-gray-100">
       <div className="container-pharma">
-        <div className="text-center mb-12">
-          <h2 className="section-title mb-3">Nos rayons</h2>
-          <p className="text-gray-500 text-lg">Trouvez exactement ce dont vous avez besoin</p>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-lg font-bold text-gray-900">Nos rayons</h2>
+          <Link href="/catalogue" className="text-sm text-pharma-green font-semibold hover:underline">
+            Tout voir →
+          </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              href={`/catalogue?categorie=${cat.slug}`}
-              className="group flex flex-col items-center p-5 rounded-2xl bg-gray-50 hover:bg-pharma-green-light border border-transparent hover:border-pharma-green transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
-            >
-              {cat.image ? (
-                <div className="relative w-16 h-16 mb-3 rounded-xl overflow-hidden">
-                  <Image src={cat.image} alt={cat.name} fill className="object-cover" />
+        {/* Horizontal scroll on mobile, grid on desktop */}
+        <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide sm:grid sm:grid-cols-5 lg:grid-cols-9 sm:overflow-visible sm:pb-0">
+          {categories.map((cat) => {
+            const style = CATEGORY_STYLES[cat.slug] ?? { bg: "bg-gray-50", text: "text-gray-700", emoji: cat.icon ?? "📦" };
+            return (
+              <Link
+                key={cat.id}
+                href={`/catalogue?categorie=${cat.slug}`}
+                className="group flex-shrink-0 flex flex-col items-center gap-2 min-w-[72px] sm:min-w-0"
+              >
+                <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${style.bg} flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 group-hover:shadow-md transition-all duration-200`}>
+                  {cat.icon ?? style.emoji}
                 </div>
-              ) : (
-                <div className="w-16 h-16 mb-3 rounded-xl bg-white shadow-sm flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
-                  {DEFAULT_ICONS[cat.slug] ?? "📦"}
-                </div>
-              )}
-              <span className="text-sm font-semibold text-gray-700 group-hover:text-pharma-green text-center transition-colors leading-tight">
-                {cat.name}
-              </span>
-              {cat._count && (
-                <span className="text-xs text-gray-400 mt-0.5">
-                  {cat._count.products} produits
+                <span className={`text-xs font-semibold text-center leading-tight ${style.text} line-clamp-2 max-w-[72px] sm:max-w-full`}>
+                  {cat.name}
                 </span>
-              )}
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
 
-          {/* All categories link */}
+          {/* All categories */}
           <Link
             href="/catalogue"
-            className="group flex flex-col items-center p-5 rounded-2xl bg-pharma-green text-white hover:bg-emerald-700 transition-all duration-300 hover:-translate-y-1 hover:shadow-md"
+            className="group flex-shrink-0 flex flex-col items-center gap-2 min-w-[72px] sm:min-w-0"
           >
-            <div className="w-16 h-16 mb-3 rounded-xl bg-white/20 flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-pharma-green flex items-center justify-center text-2xl sm:text-3xl group-hover:scale-110 group-hover:shadow-md transition-all duration-200">
               🛍️
             </div>
-            <span className="text-sm font-semibold text-center">Tout le catalogue</span>
+            <span className="text-xs font-semibold text-center text-pharma-green leading-tight">
+              Tout le catalogue
+            </span>
           </Link>
         </div>
       </div>

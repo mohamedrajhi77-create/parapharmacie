@@ -8,6 +8,7 @@ import BonsPlansSection from "@/components/home/BonsPlansSection";
 import BrandsSection from "@/components/home/BrandsSection";
 import HowItWorks from "@/components/home/HowItWorks";
 import AstucesSection from "@/components/home/AstucesSection";
+import Newsletter from "@/components/home/Newsletter";
 import Reviews from "@/components/home/Reviews";
 import MapSection from "@/components/home/MapSection";
 import FAQ from "@/components/home/FAQ";
@@ -67,35 +68,60 @@ export default async function HomePage() {
 
   return (
     <>
+      {/* 1. Hero carousel */}
       <Hero />
+
+      {/* 2. Category bar */}
       <Categories categories={categories} />
+
+      {/* 3. Bons plans marques */}
       <BonsPlansSection />
+
+      {/* 4. Produits populaires */}
       {featuredProducts.length > 0 && (
         <FeaturedProducts
           products={serializeProducts(featuredProducts)}
-          title="Produits populaires"
-          subtitle="Nos meilleures ventes du moment"
+          title="Nos produits populaires"
+          subtitle="Les meilleures ventes du moment"
+          bg="white"
         />
       )}
+
+      {/* 5. Promotions */}
       {promoProducts.length > 0 && (
         <FeaturedProducts
           products={serializeProducts(promoProducts)}
-          title="Promotions en cours"
+          title="🏷️ Promotions en cours"
           subtitle="Profitez de nos offres spéciales"
           viewAllHref="/catalogue?isPromotion=true"
+          bg="gray"
         />
       )}
+
+      {/* 6. Marques */}
       <BrandsSection />
+
+      {/* 7. Comment ça marche */}
       <HowItWorks />
+
+      {/* 8. Nouveautés */}
       {newProducts.length > 0 && (
         <FeaturedProducts
           products={serializeProducts(newProducts)}
-          title="Nouveautés"
+          title="✨ Nouveautés"
           subtitle="Les dernières arrivées en magasin"
           viewAllHref="/catalogue?isNew=true"
+          bg="white"
         />
       )}
+
+      {/* 9. Nos astuces */}
       <AstucesSection />
+
+      {/* 10. Newsletter */}
+      <Newsletter />
+
+      {/* 11. Avis & Contact */}
       <Reviews />
       <MapSection />
       <FAQ />

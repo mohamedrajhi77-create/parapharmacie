@@ -66,13 +66,13 @@ async function CatalogueContent({ searchParams }: PageProps) {
       skip,
       take: ITEMS_PER_PAGE,
       include: { category: true, _count: { select: { reviews: true } } },
-    }),
-    prisma.product.count({ where }),
+    }).catch(() => []),
+    prisma.product.count({ where }).catch(() => 0),
     prisma.category.findMany({
       where: { isActive: true },
       orderBy: { order: "asc" },
       include: { _count: { select: { products: { where: { isActive: true } } } } },
-    }),
+    }).catch(() => []),
   ]);
 
   const totalPages = Math.ceil(total / ITEMS_PER_PAGE);

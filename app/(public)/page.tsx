@@ -16,37 +16,39 @@ export const metadata: Metadata = {
     "Réservez vos produits de parapharmacie en ligne et venez les récupérer en magasin. Soins, beauté, bien-être. Paiement en magasin uniquement.",
 };
 
-export const revalidate = 3600;
-
 async function getHomeData() {
-  const [categories, featuredProducts, newProducts, promoProducts] = await Promise.all([
-    prisma.category.findMany({
-      where: { isActive: true },
-      orderBy: { order: "asc" },
-      include: { _count: { select: { products: { where: { isActive: true } } } } },
-      take: 9,
-    }),
-    prisma.product.findMany({
-      where: { isActive: true, isFeatured: true },
-      include: { category: true, _count: { select: { reviews: true } } },
-      orderBy: { viewCount: "desc" },
-      take: 8,
-    }),
-    prisma.product.findMany({
-      where: { isActive: true, isNew: true },
-      include: { category: true, _count: { select: { reviews: true } } },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-    prisma.product.findMany({
-      where: { isActive: true, isPromotion: true },
-      include: { category: true, _count: { select: { reviews: true } } },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-    }),
-  ]);
-
-  return { categories, featuredProducts, newProducts, promoProducts };
+  try {
+    const [categories, featuredProducts, newProducts, promoProducts] = await Promise.all([
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: { order: "asc" },
+        include: { _count: { select: { products: { where: { isActive: true } } } } },
+        take: 9,
+      }),
+      prisma.product.findMany({
+        where: { isActive: true, isFeatured: true },
+        include: { category: true, _count: { select: { reviews: true } } },
+        orderBy: { viewCount: "desc" },
+        take: 8,
+      }),
+      prisma.product.findMany({
+        where: { isActive: true, isNew: true },
+        include: { category: true, _count: { select: { reviews: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+      prisma.product.findMany({
+        where: { isActive: true, isPromotion: true },
+        include: { category: true, _count: { select: { reviews: true } } },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+      }),
+    ]);
+    return { categories, featuredProducts, newProducts, promoProducts };
+  } catch (err) {
+    console.error("getHomeData error:", err);
+    return { categories: [], featuredProducts: [], newProducts: [], promoProducts: [] };
+  }
 }
 
 export default async function HomePage() {

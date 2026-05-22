@@ -5,8 +5,9 @@ import { Prisma } from "@prisma/client";
 import { Suspense } from "react";
 import ProductCard from "@/components/catalogue/ProductCard";
 import Filters from "@/components/catalogue/Filters";
+import MobileFiltersDrawer from "@/components/catalogue/MobileFiltersDrawer";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Package, SlidersHorizontal } from "lucide-react";
+import { Package } from "lucide-react";
 import type { Metadata } from "next";
 import type { Product } from "@/types";
 
@@ -102,11 +103,7 @@ async function CatalogueContent({ searchParams }: PageProps) {
             </p>
           </div>
 
-          {/* Mobile filters toggle */}
-          <button className="lg:hidden flex items-center gap-2 text-sm font-medium text-gray-700 border border-gray-200 px-4 py-2 rounded-xl hover:bg-gray-50 transition-colors">
-            <SlidersHorizontal className="w-4 h-4" />
-            Filtres
-          </button>
+          <MobileFiltersDrawer categories={categories} />
         </div>
 
         {serialized.length === 0 ? (

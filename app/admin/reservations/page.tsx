@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { prisma } from "@/lib/prisma";
 import ReservationsTable from "@/components/admin/ReservationsTable";
 import { getStatusLabel } from "@/lib/utils";

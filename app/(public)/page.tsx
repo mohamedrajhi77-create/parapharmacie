@@ -4,7 +4,10 @@ import { prisma } from "@/lib/prisma";
 import Hero from "@/components/home/Hero";
 import Categories from "@/components/home/Categories";
 import FeaturedProducts from "@/components/home/FeaturedProducts";
+import BonsPlansSection from "@/components/home/BonsPlansSection";
+import BrandsSection from "@/components/home/BrandsSection";
 import HowItWorks from "@/components/home/HowItWorks";
+import AstucesSection from "@/components/home/AstucesSection";
 import Reviews from "@/components/home/Reviews";
 import MapSection from "@/components/home/MapSection";
 import FAQ from "@/components/home/FAQ";
@@ -66,6 +69,7 @@ export default async function HomePage() {
     <>
       <Hero />
       <Categories categories={categories} />
+      <BonsPlansSection />
       {featuredProducts.length > 0 && (
         <FeaturedProducts
           products={serializeProducts(featuredProducts)}
@@ -81,6 +85,7 @@ export default async function HomePage() {
           viewAllHref="/catalogue?isPromotion=true"
         />
       )}
+      <BrandsSection />
       <HowItWorks />
       {newProducts.length > 0 && (
         <FeaturedProducts
@@ -90,6 +95,7 @@ export default async function HomePage() {
           viewAllHref="/catalogue?isNew=true"
         />
       )}
+      <AstucesSection />
       <Reviews />
       <MapSection />
       <FAQ />

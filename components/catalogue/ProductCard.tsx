@@ -49,14 +49,31 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* Badges */}
         <div className="absolute top-2 left-2 flex flex-col gap-1.5">
-          {product.isPromotion && discountPct && (
-            <Badge variant="promo">-{discountPct}%</Badge>
+          {discountPct && discountPct > 0 && (
+            <span className="bg-red-500 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
+              -{discountPct}%
+            </span>
           )}
-          {product.isNew && <Badge variant="new">Nouveau</Badge>}
+          {product.isNew && !discountPct && (
+            <span className="bg-pharma-blue text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
+              Nouveau
+            </span>
+          )}
           {product.stock === 0 && (
-            <Badge variant="secondary" className="bg-gray-700 text-white">Épuisé</Badge>
+            <span className="bg-gray-600 text-white text-xs font-bold px-2 py-0.5 rounded-md shadow-sm">
+              Épuisé
+            </span>
           )}
         </div>
+
+        {/* Wishlist */}
+        <button
+          onClick={(e) => e.preventDefault()}
+          className="absolute top-2 right-2 p-1.5 bg-white/80 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-all hover:bg-white shadow-sm"
+          aria-label="Favoris"
+        >
+          <Heart className="w-3.5 h-3.5 text-gray-400 hover:text-red-500 transition-colors" />
+        </button>
 
         {/* Add to cart overlay */}
         <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform duration-300">

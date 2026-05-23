@@ -30,7 +30,7 @@ export default function ParametresPage() {
   };
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Paramètres du site</h1>

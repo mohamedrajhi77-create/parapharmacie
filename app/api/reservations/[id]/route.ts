@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { sendReservationReady, sendReservationCancelled } from "@/lib/resend";
+import { sendReservationPreparing, sendReservationReady, sendReservationCancelled } from "@/lib/resend";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -31,6 +31,16 @@ export async function PATCH(req: Request, { params }: Params) {
     });
 
     // Send email notifications on status change
+    if (body.status === "CONFIRMED") {
+      sendReservationPreparing({
+        customerName: reservation.customerName,
+        customerEmail: reservation.customerEmail,
+        confirmationId: reservation.confirmationId,
+        pickupDate: reservation.pickupDate,
+        pickupTime: reservation.pickupTime,
+      }).catch(console.error);
+    }
+
     if (body.status === "READY") {
       sendReservationReady({
         customerName: reservation.customerName,

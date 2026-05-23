@@ -15,8 +15,8 @@ interface ReservationsTableProps {
 }
 
 const STATUS_TRANSITIONS: Record<string, { next: string; label: string; icon: typeof CheckCircle }[]> = {
-  PENDING: [{ next: "CONFIRMED", label: "Confirmer", icon: CheckCircle }],
-  CONFIRMED: [{ next: "READY", label: "Prête", icon: Package }],
+  PENDING: [{ next: "CONFIRMED", label: "Valider → préparation", icon: CheckCircle }],
+  CONFIRMED: [{ next: "READY", label: "Marquer prête", icon: Package }],
   READY: [{ next: "COMPLETED", label: "Récupérée", icon: CheckCircle }],
 };
 

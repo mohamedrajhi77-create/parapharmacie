@@ -34,13 +34,13 @@ export async function sendReservationConfirmation(data: ReservationEmailData) {
     <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
     <body style="font-family:Arial,sans-serif;background:#f9fafb;margin:0;padding:20px;">
       <div style="max-width:600px;margin:0 auto;background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
-        <div style="background:#059669;padding:32px;text-align:center;">
-          <h1 style="color:#fff;margin:0;font-size:24px;">✅ Réservation confirmée</h1>
-          <p style="color:#d1fae5;margin:8px 0 0;">${STORE_INFO.name}</p>
+        <div style="background:#d97706;padding:32px;text-align:center;">
+          <h1 style="color:#fff;margin:0;font-size:24px;">⏳ Réservation reçue</h1>
+          <p style="color:#fef3c7;margin:8px 0 0;">${STORE_INFO.name}</p>
         </div>
         <div style="padding:32px;">
           <p>Bonjour <strong>${data.customerName}</strong>,</p>
-          <p>Votre réservation a bien été enregistrée. Notre équipe va la préparer.</p>
+          <p>Nous avons bien reçu votre réservation. Elle est actuellement <strong>en cours de validation</strong> par notre équipe. Vous recevrez une nouvelle notification dès qu&apos;elle passera en préparation.</p>
 
           <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:16px;margin:20px 0;">
             <h3 style="margin:0 0 8px;color:#059669;">📋 Référence : ${data.confirmationId.slice(0, 8).toUpperCase()}</h3>
@@ -87,7 +87,7 @@ export async function sendReservationConfirmation(data: ReservationEmailData) {
     resend.emails.send({
       from: FROM,
       to: data.customerEmail,
-      subject: `✅ Réservation confirmée - Ref. ${data.confirmationId.slice(0, 8).toUpperCase()}`,
+      subject: `⏳ Réservation reçue - Ref. ${data.confirmationId.slice(0, 8).toUpperCase()}`,
       html,
     }),
     resend.emails.send({
@@ -99,6 +99,38 @@ export async function sendReservationConfirmation(data: ReservationEmailData) {
   ]);
 
   return { customer: customerResult, admin: adminResult };
+}
+
+export async function sendReservationPreparing(data: {
+  customerName: string;
+  customerEmail: string;
+  confirmationId: string;
+  pickupDate: Date | string;
+  pickupTime: string;
+}) {
+  await resend.emails.send({
+    from: FROM,
+    to: data.customerEmail,
+    subject: `📦 Votre commande est en préparation - Ref. ${data.confirmationId.slice(0, 8).toUpperCase()}`,
+    html: `
+      <div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;">
+        <div style="background:#2563eb;padding:24px;text-align:center;border-radius:8px 8px 0 0;">
+          <h1 style="color:#fff;margin:0;">📦 Commande validée</h1>
+        </div>
+        <div style="padding:24px;background:#fff;">
+          <p>Bonjour <strong>${data.customerName}</strong>,</p>
+          <p>Votre réservation a été <strong>validée</strong> par notre équipe et est maintenant <strong>en cours de préparation</strong>.</p>
+          <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:16px;margin:16px 0;">
+            <p><strong>📋 Référence :</strong> ${data.confirmationId.slice(0, 8).toUpperCase()}</p>
+            <p><strong>📅 Retrait prévu :</strong> ${formatDate(data.pickupDate)} à ${data.pickupTime}</p>
+            <p><strong>📍 Adresse :</strong> ${STORE_INFO.address}</p>
+          </div>
+          <p>Nous vous enverrons une nouvelle notification dès que votre commande sera prête à récupérer.</p>
+          <p>À très bientôt ! 💙</p>
+        </div>
+      </div>
+    `,
+  });
 }
 
 export async function sendReservationReady(data: {

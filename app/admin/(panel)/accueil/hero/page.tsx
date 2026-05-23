@@ -133,9 +133,9 @@ export default function HeroAdminPage() {
                 <div key={key}>
                   <label className="block text-xs font-semibold text-gray-600 mb-1">{label}</label>
                   {key === "title" || key === "subtitle" ? (
-                    <textarea rows={2} value={(form as Record<string, string>)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pharma-green resize-none" />
+                    <textarea rows={2} value={(form as unknown as Record<string, string>)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pharma-green resize-none" />
                   ) : (
-                    <input type="text" value={(form as Record<string, string>)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pharma-green" />
+                    <input type="text" value={(form as unknown as Record<string, string>)[key]} onChange={e => setForm(p => ({ ...p, [key]: e.target.value }))} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-pharma-green" />
                   )}
                 </div>
               ))}

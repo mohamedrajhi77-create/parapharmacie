@@ -43,10 +43,12 @@ export default function AstucesAdminPage() {
     setSaving(true);
     if (creating) {
       const r = await fetch("/api/admin/astuces", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, order: astuces.length + 1 }) });
-      setAstuces(p => [...p, await r.json()]);
+      const created = await r.json();
+      setAstuces(p => [...p, created]);
     } else if (editing) {
       const r = await fetch(`/api/admin/astuces/${editing.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
-      setAstuces(p => p.map(a => a.id === editing.id ? { ...a, ...await r.clone().json() } : a));
+      const updated = await r.json();
+      setAstuces(p => p.map(a => a.id === editing.id ? { ...a, ...updated } : a));
     }
     setSaving(false);
     close();
@@ -124,7 +126,7 @@ export default function AstucesAdminPage() {
                 <label className="block text-xs font-semibold text-gray-600 mb-2">Couleur</label>
                 <div className="grid grid-cols-3 gap-2">
                   {COLOR_OPTIONS.map(opt => (
-                    <button key={opt.value} onClick={() => setForm(p => ({ ...p, color: opt.value }))} className={`py-2 rounded-xl text-xs font-bold border-2 transition-all ${opt.color} ${form.color === opt.value ? "border-gray-900" : "border-transparent"}`}>
+                    <button key={opt.value} onClick={() => setForm(p => ({ ...p, color: opt.value }))} className={`py-2 rounded-xl text-xs font-bold border-2 transition-all ${opt.value} ${form.color === opt.value ? "border-gray-900" : "border-transparent"}`}>
                       {opt.label}
                     </button>
                   ))}

@@ -43,7 +43,8 @@ export default function BonsPlansAdminPage() {
     setSaving(true);
     if (creating) {
       const r = await fetch("/api/admin/bons-plans", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, order: bonsPlans.length + 1 }) });
-      setBonsPlans(p => [...p, await r.json()]);
+      const created = await r.json();
+      setBonsPlans(p => [...p, created]);
     } else if (editing) {
       await fetch(`/api/admin/bons-plans/${editing.id}`, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(form) });
       fetch("/api/admin/bons-plans").then(r => r.json()).then(setBonsPlans);

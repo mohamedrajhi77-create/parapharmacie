@@ -49,9 +49,9 @@ export function truncate(text: string, length: number): string {
 
 export function getStatusLabel(status: string): string {
   const labels: Record<string, string> = {
-    PENDING: "En attente",
-    CONFIRMED: "Confirmée",
-    READY: "Prête à retirer",
+    PENDING: "En cours de validation",
+    CONFIRMED: "En cours de préparation",
+    READY: "Prête à récupérer",
     COMPLETED: "Récupérée",
     CANCELLED: "Annulée",
   };
@@ -60,13 +60,24 @@ export function getStatusLabel(status: string): string {
 
 export function getStatusColor(status: string): string {
   const colors: Record<string, string> = {
-    PENDING: "bg-yellow-100 text-yellow-800",
+    PENDING: "bg-amber-100 text-amber-800",
     CONFIRMED: "bg-blue-100 text-blue-800",
-    READY: "bg-green-100 text-green-800",
+    READY: "bg-emerald-100 text-emerald-800",
     COMPLETED: "bg-gray-100 text-gray-800",
     CANCELLED: "bg-red-100 text-red-800",
   };
   return colors[status] ?? "bg-gray-100 text-gray-800";
+}
+
+export const RESERVATION_STEPS = [
+  { status: "PENDING", label: "En cours de validation", description: "Votre commande a été reçue, en attente de validation par la parapharmacie." },
+  { status: "CONFIRMED", label: "En cours de préparation", description: "Votre commande a été validée et est en cours de préparation." },
+  { status: "READY", label: "Prête à récupérer", description: "Votre commande est prête, vous pouvez venir la retirer en magasin." },
+] as const;
+
+export function getStatusStep(status: string): number {
+  const map: Record<string, number> = { PENDING: 0, CONFIRMED: 1, READY: 2, COMPLETED: 3, CANCELLED: -1 };
+  return map[status] ?? 0;
 }
 
 export const PICKUP_SLOTS = [

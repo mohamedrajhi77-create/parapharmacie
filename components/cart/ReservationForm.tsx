@@ -52,30 +52,41 @@ export default function ReservationForm() {
     setLoading(true);
 
     try {
+      const payload = {
+        ...data,
+        items: items.map((i) => ({
+          productId: i.product.id,
+          productName: i.product.name,
+          quantity: Number(i.quantity),
+          price: Number(i.product.price),
+        })),
+        totalAmount: Number(getTotalPrice()),
+      };
+
       const res = await fetch("/api/reservations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...data,
-          items: items.map((i) => ({
-            productId: i.product.id,
-            productName: i.product.name,
-            quantity: i.quantity,
-            price: i.product.price,
-          })),
-          totalAmount: getTotalPrice(),
-        }),
+        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Erreur lors de la réservation");
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        const detail =
+          typeof body?.error === "string"
+            ? body.error
+            : Array.isArray(body?.error)
+              ? body.error.map((e: { path?: string[]; message: string }) => `${e.path?.join(".") ?? ""} ${e.message}`.trim()).join(" · ")
+              : `HTTP ${res.status}`;
+        throw new Error(detail);
+      }
 
       const { confirmationId } = await res.json();
       clearCart();
       router.push(`/confirmation/${confirmationId}`);
-    } catch {
+    } catch (err) {
       toast({
         title: "Erreur",
-        description: "Impossible de créer la réservation. Réessayez.",
+        description: err instanceof Error ? err.message : "Impossible de créer la réservation. Réessayez.",
         variant: "destructive",
       });
       setLoading(false);

@@ -1,10 +1,16 @@
 import { Resend } from "resend";
 import { STORE_INFO, formatDate, formatPrice } from "./utils";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const RESEND_KEY = process.env.RESEND_API_KEY;
+const resend = RESEND_KEY ? new Resend(RESEND_KEY) : null;
 
 const FROM = process.env.RESEND_FROM_EMAIL ?? "onboarding@resend.dev";
 const ADMIN_EMAIL = process.env.RESEND_TO_ADMIN ?? "admin@parapharmacie.fr";
+
+function emailsDisabled(name: string) {
+  console.warn(`[resend] ${name} skipped — RESEND_API_KEY not configured`);
+  return null;
+}
 
 interface ReservationEmailData {
   customerName: string;
@@ -17,6 +23,7 @@ interface ReservationEmailData {
 }
 
 export async function sendReservationConfirmation(data: ReservationEmailData) {
+  if (!resend) return emailsDisabled("sendReservationConfirmation");
   const itemsHtml = data.items
     .map(
       (item) =>
@@ -108,6 +115,7 @@ export async function sendReservationPreparing(data: {
   pickupDate: Date | string;
   pickupTime: string;
 }) {
+  if (!resend) return emailsDisabled("sendReservationPreparing");
   await resend.emails.send({
     from: FROM,
     to: data.customerEmail,
@@ -140,6 +148,7 @@ export async function sendReservationReady(data: {
   pickupDate: Date | string;
   pickupTime: string;
 }) {
+  if (!resend) return emailsDisabled("sendReservationReady");
   await resend.emails.send({
     from: FROM,
     to: data.customerEmail,
@@ -170,6 +179,7 @@ export async function sendReservationCancelled(data: {
   customerEmail: string;
   confirmationId: string;
 }) {
+  if (!resend) return emailsDisabled("sendReservationCancelled");
   await resend.emails.send({
     from: FROM,
     to: data.customerEmail,

@@ -46,16 +46,20 @@ export async function POST(req: Request) {
     const data = reservationSchema.parse(body);
 
     // Verify products exist and have enough stock
+    const productIds = data.items.map((i) => i.productId);
+    const products = await prisma.product.findMany({
+      where: { id: { in: productIds } },
+      select: { id: true, name: true, stock: true, isActive: true },
+    });
+    const productMap = new Map(products.map((p) => [p.id, p]));
+
     for (const item of data.items) {
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-        select: { stock: true, isActive: true },
-      });
+      const product = productMap.get(item.productId);
       if (!product || !product.isActive) {
-        return NextResponse.json({ error: `Product ${item.productId} not available` }, { status: 400 });
+        return NextResponse.json({ error: `Produit indisponible : ${item.productName}` }, { status: 400 });
       }
       if (product.stock < item.quantity) {
-        return NextResponse.json({ error: `Insufficient stock for ${item.productId}` }, { status: 400 });
+        return NextResponse.json({ error: `Stock insuffisant pour ${product.name} (reste ${product.stock})` }, { status: 400 });
       }
     }
 
@@ -113,6 +117,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
     }
     console.error("Reservation error:", error);
-    return NextResponse.json({ error: "Internal error" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Erreur interne";
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
